@@ -14,6 +14,8 @@
 #include "trace.h"
 #include "Scene.h"
 #include "SceneSystem.h"
+#include "EntityContainer.h"
+#include "EntityFactory.h"
 
 //------------------------------------------------------------------------------
 // Private Constants:
@@ -34,6 +36,8 @@
 //------------------------------------------------------------------------------
 // Private Variables:
 //------------------------------------------------------------------------------
+
+static EntityContainer* entities = NULL;
 
 //------------------------------------------------------------------------------
 // Private Function Declarations:
@@ -59,6 +63,17 @@ bool SceneIsValid(const Scene* scene)
 	return false;
 }
 
+
+// Add an Entity to the Scene.
+// (NOTE: This is done by storing the Entity within an EntityContainer.)
+// Params:
+//   entity = Pointer to the Entity to be added.
+void SceneAddEntity(Entity* entity)
+{
+	EntityContainerAddEntity(entities, entity);
+}
+
+
 // Load the scene.
 void SceneLoad(const Scene* scene)
 {
@@ -67,6 +82,8 @@ void SceneLoad(const Scene* scene)
 	{
 		// TODO: Call TraceMessage, passing the format string "%s: Load" and the name of the scene.
 		TraceMessage("%s: Load", scene->name);
+
+		EntityContainerCreate();
 
 		// Execute the Load function.
 		(*scene->load)();
@@ -96,6 +113,8 @@ void SceneUpdate(const Scene* scene, float dt)
 		TraceMessage("%s: Update", scene->name);
 		// Execute the Update function.
 		(*scene->update)(dt);
+
+		EntityContainerUpdateAll(entities, dt);
 	}
 }
 
@@ -109,6 +128,8 @@ void SceneRender(const Scene* scene)
 		TraceMessage("%s: Render", scene->name);
 		// Execute the Render function.
 		(*scene->render)();
+
+		EntityContainerRenderAll(entities);
 	}
 }
 
@@ -122,6 +143,9 @@ void SceneExit(const Scene* scene)
 		TraceMessage("%s: Exit", scene->name);
 		// Execute the Exit function.
 		(*scene->exit)();
+
+		EntityContainerFreeAll(entities);
+		EntityFactoryFreeAll();
 	}
 }
 
@@ -135,6 +159,8 @@ void SceneUnload(const Scene* scene)
 		TraceMessage("%s: Unload", scene->name);
 		// Execute the Unload function.
 		(*scene->unload)();
+
+		EntityContainerFree(&entities);
 	}
 }
 

@@ -40,6 +40,8 @@
 //------------------------------------------------------------------------------
 // Public Functions:
 //------------------------------------------------------------------------------
+
+
 // Build a single instance of the specified entity.
 // (HINT: See project instructions.)
 // Params:
@@ -70,6 +72,17 @@ Entity* EntityFactoryBuild(const char* filename)
 	}
 	return NULL;
 }
+
+
+// Free all archetype Entities.
+// (Hint: If the "archetypes" container exists, then the EntityContainerFreeAll
+//    function must be called.)
+void EntityFactoryFreeAll()
+{
+
+}
+
+
 //------------------------------------------------------------------------------
 // Private Functions:
 //------------------------------------------------------------------------------

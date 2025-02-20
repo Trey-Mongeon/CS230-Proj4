@@ -96,6 +96,21 @@ void AnimationFree(Animation** animation)
 	}
 }
 
+
+// Dynamically allocate a clone of an existing Animation component.
+// (Hint: Perform a shallow copy of the member variables.)
+// Params:
+//	 other = Pointer to the component to be cloned.
+// Returns:
+//	 If 'other' is valid and the memory allocation was successful,
+//	   then return a pointer to the cloned component,
+//	   else return NULL.
+Animation* AnimationClone(const Animation* other)
+{
+
+}
+
+
 // Read the properties of an Animation component from a file.
 // [NOTE: Read the integer values for frameIndex and frameCount.]
 // [NOTE: Read the float values for frameDelay and frameDuration.]

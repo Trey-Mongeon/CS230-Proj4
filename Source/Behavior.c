@@ -40,3 +40,13 @@
 // Private Functions:
 //------------------------------------------------------------------------------
 
+
+// Set the parent Entity for a Behavior component.
+// Params:
+//	 behavior = Pointer to the Behavior component.
+//	 parent = Pointer to the parent Entity.
+void BehaviorSetParent(Behavior* behavior, Entity* parent)
+{
+	UNREFERENCED_PARAMETER(behavior);
+	UNREFERENCED_PARAMETER(parent);
+}
