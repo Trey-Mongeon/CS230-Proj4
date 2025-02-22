@@ -16,6 +16,7 @@
 #include "Sprite.h"
 #include "Transform.h"
 #include "Physics.h"
+#include "EntityContainer.h"
 
 //------------------------------------------------------------------------------
 // Private Constants:
@@ -32,7 +33,7 @@
 //------------------------------------------------------------------------------
 // Private Variables:
 //------------------------------------------------------------------------------
-
+static EntityContainer* archetypes = NULL;
 //------------------------------------------------------------------------------
 // Private Function Declarations:
 //------------------------------------------------------------------------------
@@ -50,25 +51,45 @@
 //	 If the filename is valid
 //	   then return a pointer to a new instance of the specified entity,
 //	   else NULL.
-Entity* EntityFactoryBuild(const char* filename)
+Entity* EntityFactoryBuild(const char* entityName)
 {
-	if (filename)
+	if (entityName)
 	{
-		Stream stream = StreamOpen(filename);
-
-		if(stream)
+		if(archetypes == NULL)
 		{
-			const char* token = StreamReadToken(stream);
+			archetypes = EntityContainerCreate();
+		}
 
-			if (!strncmp("Entity", token, _countof("Entity")))
+		Entity* foundEntity = EntityContainerFindByName(archetypes, entityName);
+
+		if (foundEntity == NULL)
+		{
+			char pathName[FILENAME_MAX] = "";
+
+			sprintf_s(pathName, _countof(pathName), "Data/%s.txt", entityName);
+
+			Stream stream = StreamOpen(pathName);
+
+			if (stream)
 			{
-				Entity *entityPtr = EntityCreate();
-				EntityRead(entityPtr, stream);
-				StreamClose(&stream);
-				return entityPtr;
+				const char* token = StreamReadToken(stream);
+
+				if (!strncmp("Entity", token, _countof("Entity")))
+				{
+					Entity* entityPtr = EntityCreate();
+					EntityRead(entityPtr, stream);
+					EntityContainerAddEntity(archetypes, entityPtr);
+
+					StreamClose(&stream);
+					return entityPtr;
+				}
 			}
 		}
-		StreamClose(&stream);
+		else
+		{
+			Entity* clonedEntity = EntityClone(foundEntity);
+			return clonedEntity;
+		}
 	}
 	return NULL;
 }

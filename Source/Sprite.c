@@ -94,6 +94,31 @@ void SpriteFree(Sprite** sprite)
 	}
 }
 
+
+// Dynamically allocate a clone of an existing Sprite.
+// (Hint: Perform a shallow copy of the member variables.)
+// Params:
+//	 other = Pointer to the component to be cloned.
+// Returns:
+//	 If 'other' is valid and the memory allocation was successful,
+//	   then return a pointer to the cloned component,
+//	   else return NULL.
+Sprite* SpriteClone(const Sprite* other)
+{
+	if (other)
+	{
+		Sprite* newSprite = calloc(1, sizeof(Sprite));
+
+		if (newSprite)
+		{
+			*newSprite = *other;
+			return newSprite;
+		}
+	}
+	return NULL;
+}
+
+
 // Read the properties of a Sprite component from a file.
 // [NOTE: Read the frameIndex value using StreamReadInt.]
 // [NOTE: Read the alpha value using StreamReadFloat.]

@@ -50,3 +50,27 @@ void BehaviorSetParent(Behavior* behavior, Entity* parent)
 	UNREFERENCED_PARAMETER(behavior);
 	UNREFERENCED_PARAMETER(parent);
 }
+
+
+// Dynamically allocate a clone of an existing behavior.
+// (Hint: Perform a shallow copy of the member variables.)
+// Params:
+//	 other = Pointer to the component to be cloned.
+// Returns:
+//	 If 'other' is valid and the memory allocation was successful,
+//	   then return a pointer to the cloned component,
+//	   else return NULL.
+Behavior* BehaviorClone(Behavior* other)
+{
+	if (other)
+	{
+		Behavior* newBehavior = calloc(1, sizeof(Behavior));
+
+		if (newBehavior)
+		{
+			*newBehavior = *other;
+			return newBehavior;
+		}
+	}
+	return NULL;
+}

@@ -93,6 +93,31 @@ void TransformFree(Transform** transform)
 	}
 }
 
+
+// Dynamically allocate a clone of an existing Transform.
+// (Hint: Perform a shallow copy of the member variables.)
+// Params:
+//	 other = Pointer to the component to be cloned.
+// Returns:
+//	 If 'other' is valid and the memory allocation was successful,
+//	   then return a pointer to the cloned component,
+//	   else return NULL.
+Transform* TransformClone(const Transform* other)
+{
+	if (other)
+	{
+		Transform* newTransform = calloc(1, sizeof(Transform));
+
+		if (newTransform)
+		{
+			*newTransform = *other;
+			return newTransform;
+		}
+	}
+	return NULL;
+}
+
+
 // Read the properties of a Transform component from a file.
 // [NOTE: Read the translation value using StreamReadVector2D.]
 // [NOTE: Read the rotation value using StreamReadFloat.]

@@ -13,6 +13,7 @@
 #include "Stub.h"
 #include "DGL.h"
 #include "Mesh.h"
+#include "Stream.h"
 
 //------------------------------------------------------------------------------
 // Private Constants:
@@ -78,6 +79,65 @@ Mesh* MeshCreate()
 		return NULL;
 	}
 }
+
+
+// Determines if a Mesh has the specified name.
+// (HINT: This function is similar to one in Entity.c.)
+// Params:
+//	 mesh = Pointer to the Mesh object.
+//	 name = Pointer to the name to be compared.
+// Returns:
+//	 If the mesh and name pointers are valid,
+//		then perform a string comparison and return the result (match = true),
+//		else return false.
+bool MeshIsNamed(const Mesh* mesh, const char* name)
+{
+	if (mesh && name)
+	{
+		if (strcmp(mesh->name, name) == 0)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+
+// Read the properties of a Mesh object from a file.
+// (NOTE: First, read a token from the file and verify that it is "Mesh".)
+// (NOTE: Second, read a token and store it in the Mesh's name variable.)
+// (NOTE: Third, read an integer indicating the number of vertices to be read.)
+// (NOTE: For each vertex, read a Vector2D (position), a DGL_Color (color), and a Vector2D (UV).)
+// (HINT: Call DGL_Graphics_AddVertex() to add a single vertex to the mesh.)
+// Params:
+//   mesh = Pointer to the Mesh.
+//	 stream = The data stream used for reading.
+void MeshRead(Mesh* mesh, Stream stream)
+{
+	if (mesh)
+	{
+		if (strcmp(StreamReadToken(stream), "Mesh") == 0)
+		{
+			strcpy(mesh->name, StreamReadToken(stream));
+			int vertAmnt = StreamReadInt(stream);
+
+			for (int i = 0; i < vertAmnt; ++i)
+			{
+				Vector2D posVec = { 0, 0 };
+				DGL_Color color; 
+				Vector2D UV = { 0, 0 };
+
+				StreamReadVector2D(stream, &posVec);
+				StreamReadColor(stream, &color);
+				StreamReadVector2D(stream, &UV);
+
+				DGL_Graphics_AddVertex(&posVec, &color, &UV);
+			}
+			mesh->meshResource = DGL_Graphics_EndMesh();
+		}
+	}
+}
+
 
 // Build a quadrilateral mesh and store it in the specified Mesh object.
 // (NOTE: The DGL_Mesh object must be created using DGL_Graphics_StartMesh,

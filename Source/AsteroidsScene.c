@@ -15,6 +15,7 @@
 #include "SceneSystem.h"
 #include "AsteroidsScene.h"
 #include "DGL.h"
+#include "EntityFactory.h"
 
 //------------------------------------------------------------------------------
 // Private Constants:
@@ -88,6 +89,13 @@ static void AsteroidsSceneLoad(void)
 // Initialize the entities and variables used by the scene.
 static void AsteroidsSceneInit()
 {
+	Entity* spaceshipEntity = EntityFactoryBuild("Spaceship");
+
+	if (spaceshipEntity)
+	{
+		SceneAddEntity(spaceshipEntity);
+	}
+
 	DGL_Color bgColor = { 0,0,0,0 };
 	DGL_Graphics_SetBackgroundColor(&bgColor);
 

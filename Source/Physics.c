@@ -85,6 +85,31 @@ void PhysicsFree(Physics** physics)
 	}
 }
 
+
+// Dynamically allocate a clone of an existing Physics component.
+// (Hint: Perform a shallow copy of the member variables.)
+// Params:
+//	 other = Pointer to the component to be cloned.
+// Returns:
+//	 If 'other' is valid and the memory allocation was successful,
+//	   then return a pointer to the cloned component,
+//	   else return NULL.
+Physics* PhysicsClone(const Physics* other)
+{
+	if (other)
+	{
+		Physics* newPhysics = calloc(1, sizeof(Physics));
+
+		if (newPhysics)
+		{
+			*newPhysics = *other;
+			return newPhysics;
+		}
+	}
+	return NULL;
+}
+
+
 // Read the properties of a Physics component from a file.
 // [NOTE: Read the acceleration and velocity values using StreamReadVector2D.]
 // Params:

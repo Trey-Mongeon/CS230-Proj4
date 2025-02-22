@@ -74,6 +74,36 @@ Stream StreamOpen(const char* filePath)
 	}
 }
 
+
+// Read the data for a Color from a stream.
+// (NOTE: Verify that the stream and color pointers are valid first.)
+// (HINT: Use StreamReadFloat() to read the RGBA values, in sequence.)
+// Params:
+//	 stream = The file stream from which to read.
+// Returns:
+//	 If the stream and color pointers are both valid,
+//	   then read the RGBA components, in sequence,
+//	   else fill the RGBA components with 0.
+//		 (optionally, write an error message to the trace log).
+void StreamReadColor(Stream stream, DGL_Color* color)
+{
+	if (stream && color)
+	{
+		color->r = StreamReadFloat(stream);
+		color->g = StreamReadFloat(stream);
+		color->b = StreamReadFloat(stream);
+		color->a = StreamReadFloat(stream);
+	}
+	else if (color)
+	{
+		color->r = 0;
+		color->g = 0;
+		color->b = 0;
+		color->a = 0;
+	}
+}
+
+
 // Read a single integer from a stream.
 // (NOTE: Verify that the stream is valid first.)
 // (NOTE: Use fscanf_s() to scan the input stream for an integer.)

@@ -122,7 +122,7 @@ void EntityFree(Entity** entity)
 //		else return false.
 bool EntityIsNamed(const Entity* entity, const char* name)
 {
-	if (entity)
+	if (entity) // instruction comments dont say to check name ptr but do in other IsNamed functions
 	{
 		if (strcmp(entity->name, name) == 0)
 		{

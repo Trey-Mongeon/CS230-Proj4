@@ -107,7 +107,17 @@ void AnimationFree(Animation** animation)
 //	   else return NULL.
 Animation* AnimationClone(const Animation* other)
 {
+	if (other)
+	{
+		Animation* newAnim = calloc(1, sizeof(Animation));
 
+		if (newAnim)
+		{
+			*newAnim = *other;
+			return newAnim;
+		}
+	}
+	return NULL;
 }
 
 

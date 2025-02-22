@@ -320,20 +320,20 @@ static void Level1SceneLoad(void)
 // Initialize the entities and variables used by the scene.
 static void Level1SceneInit()
 {
-	instance.planetEntity = EntityFactoryBuild("./Data/PlanetBounce.txt");
+	instance.planetEntity = EntityFactoryBuild("PlanetBounce");
 	if (instance.planetEntity)
 	{
 		SpriteSetMesh(EntityGetSprite(instance.planetEntity), instance.mesh);
 		SpriteSetSpriteSource(EntityGetSprite(instance.planetEntity), instance.spriteSource);
 		SpriteSetFrame(EntityGetSprite(instance.planetEntity), 0);
 	}
-	instance.monkeyEntity = EntityFactoryBuild("./Data/Monkey.txt");
+	instance.monkeyEntity = EntityFactoryBuild("Monkey");
 	if (instance.monkeyEntity)
 	{
 		instance.monkeyState = MonkeyInvalid;
 		Level1SceneSetMonkeyState(instance.monkeyEntity, MonkeyIdle);
 	}
-	instance.LivesText = EntityFactoryBuild("./Data/MonkeyLivesText.txt");
+	instance.LivesText = EntityFactoryBuild("MonkeyLivesText");
 	if (instance.LivesText)
 	{
 		Sprite* LivesTextSpr = EntityGetSprite(instance.LivesText);
