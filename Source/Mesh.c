@@ -118,7 +118,7 @@ void MeshRead(Mesh* mesh, Stream stream)
 	{
 		if (strcmp(StreamReadToken(stream), "Mesh") == 0)
 		{
-			strcpy(mesh->name, StreamReadToken(stream));
+			strcpy_s(mesh->name, sizeof(mesh->name), StreamReadToken(stream));
 			int vertAmnt = StreamReadInt(stream);
 
 			for (int i = 0; i < vertAmnt; ++i)

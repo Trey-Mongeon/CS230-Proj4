@@ -16,6 +16,7 @@
 #include "SceneSystem.h"
 #include "EntityContainer.h"
 #include "EntityFactory.h"
+#include "MeshLibrary.h"
 
 //------------------------------------------------------------------------------
 // Private Constants:
@@ -84,6 +85,7 @@ void SceneLoad(const Scene* scene)
 		TraceMessage("%s: Load", scene->name);
 
 		EntityContainerCreate();
+		MeshLibraryInit();
 
 		// Execute the Load function.
 		(*scene->load)();
@@ -160,6 +162,7 @@ void SceneUnload(const Scene* scene)
 		// Execute the Unload function.
 		(*scene->unload)();
 
+		MeshLibraryFreeAll();
 		EntityContainerFree(&entities);
 	}
 }

@@ -18,6 +18,8 @@
 #include "string.h"
 #include "Animation.h"
 #include "Behavior.h"
+#include "BehaviorSpaceship.h"
+#include "BehaviorBullet.h"
 
 //------------------------------------------------------------------------------
 // Private Constants:
@@ -105,6 +107,7 @@ void EntityFree(Entity** entity)
 		PhysicsFree(&(*entity)->physics);
 		TransformFree(&(*entity)->transform);
 		AnimationFree(&(*entity)->animation);
+		BehaviorFree(&(*entity)->behavior);
 		free(*entity);
 
 		*entity = NULL;
@@ -271,6 +274,18 @@ void EntityRead(Entity* entity, Stream stream)
 				Animation* animationPtr = AnimationCreate();
 				AnimationRead(animationPtr, stream);
 				EntityAddAnimation(entity, animationPtr);
+			}
+			else if (strstr(token, "BehaviorSpaceship"))
+			{
+				Behavior* spaceshipBehavior = BehaviorSpaceshipCreate();
+				BehaviorRead(spaceshipBehavior, stream);
+				EntityAddBehavior(entity, spaceshipBehavior);
+			}
+			else if (strstr(token, "BehaviorBullet"))
+			{
+				Behavior* bulletBehavior = BehaviorBulletCreate();
+				BehaviorRead(bulletBehavior, stream);
+				EntityAddBehavior(entity, bulletBehavior);
 			}
 			else if(token[0] == '\0')
 			{ 
@@ -467,6 +482,11 @@ void EntityUpdate(Entity* entity, float dt)
 		if (entity->animation)
 		{
 		AnimationUpdate(entity->animation, dt);
+		}
+
+		if (entity->behavior)
+		{
+			BehaviorUpdate(entity->behavior, dt);
 		}
 	}
 }

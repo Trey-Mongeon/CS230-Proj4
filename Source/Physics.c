@@ -33,6 +33,9 @@ typedef struct Physics
 	// Velocity may be stored as a direction vector and speed scalar, instead.
 	Vector2D	velocity;
 
+	// Rotational velocity (in radians).
+	float rotationalVelocity;
+
 	// Used when calculating acceleration due to forces.
 	// Used when resolving collision between two dynamic objects.
 	//float		inverseMass;
@@ -107,6 +110,39 @@ Physics* PhysicsClone(const Physics* other)
 		}
 	}
 	return NULL;
+}
+
+
+// Get the rotational velocity of a physics component.
+// Params:
+//	 physics = Pointer to the physics component.
+// Returns:
+//	 If the physics pointer is valid,
+//		then return the component's rotational velocity value,
+//		else return 0.0f.
+float PhysicsGetRotationalVelocity(const Physics* physics)
+{
+	if (physics)
+	{
+		return physics->rotationalVelocity;
+	}
+	else
+	{
+		return 0.0f;
+	}
+}
+
+
+// Set the rotational velocity of a physics component.
+// Params:
+//	 physics = Pointer to the physics component.
+//	 rotationalVelocity = The new rotational velocity.
+void PhysicsSetRotationalVelocity(Physics* physics, float rotationalVelocity)
+{
+	if (physics)
+	{
+		physics->rotationalVelocity = rotationalVelocity;
+	}
 }
 
 
@@ -226,6 +262,13 @@ void PhysicsUpdate(Physics* physics, Transform* transform, float dt)
 		Vector2DScaleAdd(&translation, &physics->velocity, dt, &translation);
 
 		TransformSetTranslation(transform, &translation);
+
+		//rotation stuff
+		float rotation = TransformGetRotation(transform);
+
+		rotation += physics->rotationalVelocity * dt;
+
+		TransformSetRotation(transform, rotation);
 	}
 }
 //------------------------------------------------------------------------------

@@ -12,6 +12,7 @@
 #include "stdafx.h"
 #include "MeshLibrary.h"
 #include "Mesh.h"
+#include "Stream.h"
 
 //------------------------------------------------------------------------------
 // Private Constants:
@@ -63,6 +64,52 @@ void MeshLibraryInit()
 }
 
 
+
+// Free all Mesh objects in the Mesh Library.
+// (NOTE: You must call MeshFree() to free each Mesh object.)
+// (HINT: The list should contain nothing but NULL pointers once this function is done.)
+void MeshLibraryFreeAll()
+{
+	for (unsigned int i = 0; i < meshes.meshCount; ++i)
+	{
+		MeshFree(&meshes.meshList[i]);
+	}
+	meshes.meshCount = 0;
+}
+
+//------------------------------------------------------------------------------
+// Private Functions:
+//------------------------------------------------------------------------------
+
+
+static void MeshLibraryAdd(const Mesh* mesh)
+{
+	if (mesh == NULL)
+	{
+		return;
+	}
+		meshes.meshList[meshes.meshCount] = mesh;
+		++meshes.meshCount;
+}
+
+
+static const Mesh* MeshLibraryFind(const char* meshName)
+{
+	if (meshName == NULL)
+	{
+		return NULL;
+	}
+	for (unsigned int i = 0; i < meshes.meshCount; ++i)
+	{
+		if (MeshIsNamed(meshes.meshList[i], meshName))
+		{
+			return meshes.meshList[i];
+		}
+	}
+	return NULL;
+}
+
+
 // Build a mesh and add it to the mesh library, if it doesn't already exist.
 //   1: Verify that a valid name was specified (not NULL).
 //   2: Search for an existing mesh with a matching name.
@@ -84,34 +131,27 @@ void MeshLibraryInit()
 //	   else return NULL.
 const Mesh* MeshLibraryBuild(const char* meshName)
 {
-
-}
-
-
-// Free all Mesh objects in the Mesh Library.
-// (NOTE: You must call MeshFree() to free each Mesh object.)
-// (HINT: The list should contain nothing but NULL pointers once this function is done.)
-void MeshLibraryFreeAll()
-{
-	for (unsigned int i = 0; i < meshes.meshCount; ++i)
+	if (meshName == NULL)
 	{
-		MeshFree(meshes.meshList[i]);
+		return NULL;
 	}
-	meshes.meshCount = 0;
-}
 
-//------------------------------------------------------------------------------
-// Private Functions:
-//------------------------------------------------------------------------------
+	Mesh* makeMesh = NULL;
 
+	const Mesh* foundMesh = MeshLibraryFind(meshName);
+	if (foundMesh == NULL)
+	{
+		char filePath[FILENAME_MAX] = "";
+		sprintf_s(filePath, _countof(filePath), "Data/%s.txt", meshName);
+		Stream stream = StreamOpen(filePath);
 
-static void MeshLibraryAdd(const Mesh* mesh)
-{
-
-}
-
-
-static const Mesh* MeshLibraryFind(const char* meshName)
-{
-
+		if (stream)
+		{
+			makeMesh = MeshCreate();
+			MeshRead(makeMesh, stream);
+			MeshLibraryAdd(makeMesh);
+			StreamClose(&stream);
+		}
+	}
+	return makeMesh;
 }

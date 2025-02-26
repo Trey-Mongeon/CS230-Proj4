@@ -18,6 +18,7 @@
 #include "SpriteSource.h"
 #include "Trace.h"
 #include "Matrix2D.h"
+#include "MeshLibrary.h"
 
 //------------------------------------------------------------------------------
 // Private Constants:
@@ -129,8 +130,11 @@ void SpriteRead(Sprite* sprite, Stream stream)
 {
 	if (sprite)
 	{
-	sprite->frameIndex = StreamReadInt(stream);
-	sprite->alpha = StreamReadFloat(stream);
+		sprite->frameIndex = StreamReadInt(stream);
+		sprite->alpha = StreamReadFloat(stream);
+		const char* meshName = StreamReadToken(stream);
+		const Mesh* builtMesh = MeshLibraryBuild(meshName);
+		SpriteSetMesh(sprite, builtMesh);
 	}
 }
 
