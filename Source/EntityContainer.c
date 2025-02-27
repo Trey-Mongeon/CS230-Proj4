@@ -36,7 +36,7 @@ typedef struct EntityContainer
 	// or a dynamically sized array, such as a linked list.
 	// (NOTE: The implementation details are left up to the student.  However,
 	//    it is your responsiblity to ensure that memory is handled correctly.)
-	Entity* entitiesArr[128];
+	Entity* entitiesArr[256];
 
 } EntityContainer;
 //------------------------------------------------------------------------------
@@ -70,7 +70,7 @@ typedef struct EntityContainer
 //	   else return NULL.
 EntityContainer* EntityContainerCreate()
 {
-	EntityContainer* container = calloc(1, sizeof(container));
+	EntityContainer* container = calloc(1, sizeof(EntityContainer));
 
 	if (container)
 	{
@@ -206,15 +206,16 @@ void EntityContainerUpdateAll(EntityContainer* entities, float dt)
 {
 	if (entities)
 	{
-		for (unsigned int i = 0; i < entities->entityCount; ++i)
+		for (unsigned int i = 0; i < entities->entityMax; ++i)
 		{
 			EntityUpdate(entities->entitiesArr[i], dt);
 
 			if (EntityIsDestroyed(entities->entitiesArr[i]))
 			{
-				EntityFree(&entities->entitiesArr[i]);
-				entities->entitiesArr[i] = entities->entitiesArr[entities->entityCount];
+   				EntityFree(&entities->entitiesArr[i]);
 				--entities->entityCount;
+				entities->entitiesArr[i] = (entities->entitiesArr[entities->entityCount]);
+				(entities->entitiesArr[entities->entityCount]) = NULL;
 			}
 		}
 	}

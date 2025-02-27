@@ -109,10 +109,6 @@ static void AsteroidsSceneUpdate(float dt)
 {
 	// Tell the compiler that the 'dt' variable is unused.
 	UNREFERENCED_PARAMETER(dt);
-
-	// NOTE: This call causes the engine to exit immediately.  Make sure to remove
-	//   it when you are ready to test out a new scene.
-	SceneSystemSetNext(NULL);
 }
 
 // Render any objects associated with the scene.

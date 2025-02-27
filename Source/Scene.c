@@ -84,7 +84,7 @@ void SceneLoad(const Scene* scene)
 		// TODO: Call TraceMessage, passing the format string "%s: Load" and the name of the scene.
 		TraceMessage("%s: Load", scene->name);
 
-		EntityContainerCreate();
+		entities = EntityContainerCreate();
 		MeshLibraryInit();
 
 		// Execute the Load function.

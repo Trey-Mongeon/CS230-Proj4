@@ -81,7 +81,7 @@ Entity* EntityFactoryBuild(const char* entityName)
 					EntityContainerAddEntity(archetypes, entityPtr);
 
 					StreamClose(&stream);
-					return entityPtr;
+					return EntityClone(entityPtr);
 				}
 			}
 		}

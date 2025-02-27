@@ -121,6 +121,8 @@ void MeshRead(Mesh* mesh, Stream stream)
 			strcpy_s(mesh->name, sizeof(mesh->name), StreamReadToken(stream));
 			int vertAmnt = StreamReadInt(stream);
 
+			DGL_Graphics_StartMesh();
+
 			for (int i = 0; i < vertAmnt; ++i)
 			{
 				Vector2D posVec = { 0, 0 };

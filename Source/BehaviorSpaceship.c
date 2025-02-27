@@ -17,6 +17,8 @@
 #include "Transform.h"
 #include "Physics.h"
 #include "Vector2D.h"
+#include "EntityFactory.h"
+#include "Scene.h"
 
 #define PI 3.14159
 
@@ -80,7 +82,10 @@ Behavior* BehaviorSpaceshipCreate(void)
 		spaceshipBehavior->onInit = BehaviorSpaceshipOnInit;
 		spaceshipBehavior->onUpdate = BehaviorSpaceshipOnUpdate;
 		spaceshipBehavior->onExit = BehaviorSpaceshipOnExit;
+
+		return spaceshipBehavior;
 	}
+	return NULL;
 }
 //------------------------------------------------------------------------------
 // Private Functions:
@@ -131,13 +136,34 @@ static void BehaviorSpaceshipOnExit(Behavior* behavior)
 
 static void BehaviorSpaceshipUpdateRotation(Behavior* behavior, float dt)
 {
+	UNREFERENCED_PARAMETER(dt);
+
 	if (DGL_Input_KeyDown(VK_LEFT))
 	{
 		Physics* parentPhysics = EntityGetPhysics(behavior->parent);
 
 		float rotVel = PhysicsGetRotationalVelocity(parentPhysics);
 
+		rotVel = spaceshipTurnRateMax;
 
+		PhysicsSetRotationalVelocity(parentPhysics, rotVel);
+	}
+	else if (DGL_Input_KeyDown(VK_RIGHT))
+	{
+		Physics* parentPhysics = EntityGetPhysics(behavior->parent);
+
+		float rotVel = PhysicsGetRotationalVelocity(parentPhysics);
+
+		rotVel = -spaceshipTurnRateMax;
+
+		PhysicsSetRotationalVelocity(parentPhysics, rotVel);
+	}
+	else
+	{
+		Physics* parentPhysics = EntityGetPhysics(behavior->parent);
+
+		float rotVel = 0.0f;
+		PhysicsSetRotationalVelocity(parentPhysics, rotVel);
 	}
 }
 
@@ -155,17 +181,19 @@ static void BehaviorSpaceshipUpdateVelocity(Behavior* behavior, float dt)
 		Vector2D vecFromShipRot;
 		Vector2DFromAngleRad(&vecFromShipRot, shipRot);
 
-		Vector2D *velocity = PhysicsGetVelocity(parentPhysics);
+		const Vector2D *velocity = PhysicsGetVelocity(parentPhysics);
 
-		Vector2DScaleAdd(velocity, &vecFromShipRot, spaceshipAcceleration, velocity);
+		Vector2D newVelocity;
 
-		float speed = Vector2DLength(velocity);
+		Vector2DScaleAdd(&newVelocity, &vecFromShipRot, spaceshipAcceleration * dt, velocity);
+
+		float speed = Vector2DLength(&newVelocity);
 
 		if (speed > spaceshipSpeedMax)
 		{
-			Vector2DScale(velocity, velocity, spaceshipSpeedMax / speed);
+			Vector2DScale(&newVelocity, &newVelocity, spaceshipSpeedMax / speed);
 		}
-		PhysicsSetVelocity(parentPhysics, velocity);
+		PhysicsSetVelocity(parentPhysics, &newVelocity);
 	}
 	
 }
@@ -173,11 +201,50 @@ static void BehaviorSpaceshipUpdateVelocity(Behavior* behavior, float dt)
 
 static void BehaviorSpaceshipUpdateWeapon(Behavior* behavior, float dt)
 {
+	if (behavior->timer > 0)
+	{
+		behavior->timer -= dt;
 
+		if (behavior->timer < 0)
+		{
+			behavior->timer = 0;
+		}
+	}
+
+	if (DGL_Input_KeyDown(VK_SPACE))
+	{
+		if (behavior->timer <= 0)
+		{
+			BehaviorSpaceshipSpawnBullet(behavior);
+			behavior->timer = spaceshipWeaponCooldownTime;
+		}
+	}
 }
 
 
 static void BehaviorSpaceshipSpawnBullet(Behavior* behavior)
 {
+	Entity* bullet = EntityFactoryBuild("Bullet");
 
+	if (bullet)
+	{
+		Transform* parentTransform = EntityGetTransform(behavior->parent);
+		const DGL_Vec2 spaceshipPosition = *TransformGetTranslation(parentTransform);
+		float shipRot = TransformGetRotation(parentTransform);
+
+		Transform* bulletTransform = EntityGetTransform(bullet);
+		TransformSetRotation(bulletTransform, shipRot);
+		TransformSetTranslation(bulletTransform, &spaceshipPosition);
+
+		DGL_Vec2 vecFromShipRot;
+		Vector2DFromAngleRad(&vecFromShipRot, shipRot);
+
+		Physics* bulletPhysics = EntityGetPhysics(bullet);
+
+		Vector2DScale(&vecFromShipRot, &vecFromShipRot, spaceshipWeaponBulletSpeed);
+
+		PhysicsSetVelocity(bulletPhysics, &vecFromShipRot);
+
+		SceneAddEntity(bullet);
+	}
 }

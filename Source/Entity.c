@@ -18,8 +18,8 @@
 #include "string.h"
 #include "Animation.h"
 #include "Behavior.h"
-#include "BehaviorSpaceship.h"
 #include "BehaviorBullet.h"
+#include "BehaviorSpaceship.h"
 
 //------------------------------------------------------------------------------
 // Private Constants:
@@ -102,7 +102,6 @@ void EntityFree(Entity** entity)
 {
 	if (entity && *entity)
 	{
-
 		SpriteFree(&(*entity)->sprite);
 		PhysicsFree(&(*entity)->physics);
 		TransformFree(&(*entity)->transform);
@@ -110,7 +109,7 @@ void EntityFree(Entity** entity)
 		BehaviorFree(&(*entity)->behavior);
 		free(*entity);
 
-		*entity = NULL;
+   		*entity = NULL;
 	}
 }
 
@@ -332,9 +331,6 @@ Animation* EntityGetAnimation(const Entity* entity)
 }
 
 
-
-
-
 // Attach a Physics component to an Entity.
 // Params:
 //	 entity = Pointer to the Entity.
@@ -500,7 +496,7 @@ void EntityRender(Entity* entity)
 {
 	if (entity)
 	{
-		SpriteRender(entity->sprite, entity->transform);
+ 		SpriteRender(entity->sprite, entity->transform);
 	}
 }
 //------------------------------------------------------------------------------

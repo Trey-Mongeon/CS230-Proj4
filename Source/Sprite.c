@@ -144,7 +144,7 @@ void SpriteRead(Sprite* sprite, Stream stream)
 //   transform = Pointer to the Transform component.
 void SpriteRender(const Sprite* sprite, Transform* transform)
 {
-	if (sprite && sprite->mesh)
+   	if (sprite && sprite->mesh)
 	{
 
 		if (sprite->spriteSource)
