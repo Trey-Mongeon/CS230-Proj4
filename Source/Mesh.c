@@ -225,6 +225,6 @@ void MeshFree(Mesh** mesh)
 	{
 		DGL_Graphics_FreeMesh(&(*mesh)->meshResource);
 		free(*mesh);
-		mesh = NULL;
+		*mesh = NULL;
 	}
 }

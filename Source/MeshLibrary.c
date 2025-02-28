@@ -136,11 +136,11 @@ const Mesh* MeshLibraryBuild(const char* meshName)
 		return NULL;
 	}
 
-	Mesh* makeMesh = NULL;
-
 	const Mesh* foundMesh = MeshLibraryFind(meshName);
 	if (foundMesh == NULL)
 	{
+		Mesh* makeMesh = NULL;
+
 		char filePath[FILENAME_MAX] = "";
 		sprintf_s(filePath, _countof(filePath), "Data/%s.txt", meshName);
 		Stream stream = StreamOpen(filePath);
@@ -151,7 +151,8 @@ const Mesh* MeshLibraryBuild(const char* meshName)
 			MeshRead(makeMesh, stream);
 			MeshLibraryAdd(makeMesh);
 			StreamClose(&stream);
+			return makeMesh;
 		}
 	}
-	return makeMesh;
+	return foundMesh;
 }
